@@ -1,7 +1,7 @@
 class Cell{
-		int trans_id;			//transaction id
-		int offset_del;			//offset for deletion record
-		int offset_ins;			//offset for insertion record
+		int trans_id;
+		int offset_del;
+		int offset_ins;
 	public:
 		Cell();
 		~Cell();
