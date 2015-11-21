@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <iostream>
+
 #include "Modes.hpp"
 
 using namespace std;
@@ -12,7 +13,7 @@ static void processDefineSchema(DefineSchema_t *s){
 	int i;
 	printf("DefineSchema %d |", s->relationCount);
 	if ( schema == NULL) free(schema);
-	schema = new uint32_t(sizeof(uint32_t)*s->relationCount);
+	schema = (uint32_t*) malloc(sizeof(uint32_t)*s->relationCount);
 
 	for(i = 0; i < s->relationCount; i++) {
 		printf(" %d ",s->columnCounts[i]);
@@ -52,4 +53,3 @@ static void processFlush(Flush_t *fl){
 static void processForget(Forget_t *fo){
 	cout << "Forget " << fo->transactionId << endl;
 }
-
