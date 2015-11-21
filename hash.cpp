@@ -1,6 +1,6 @@
 #include<iostream>
 #include"hash.h"
-#define buck_size 3
+#define buck_size 1
 #define hash_size 2
 using namespace std;
 
@@ -68,27 +68,40 @@ int Bucket::get_local(){
 
 void Bucket::print_Bucket(){
 	int i;
-	cout<<"local depth :"<<local<<endl;
+	cout<<"local depth         : "<<local<<endl;
+	cout<<"size of range array : "<<size<<endl;
+	cout<<"currently filled    : "<<current<<endl;
 	for(i=0;i<current;i++)
 		cells[i].print_Cell();
 	cout<<endl;
 }
 
-/*int Bucket::insertBucket(int offset){
-	int i;
-	for(i=0;i<buck_size;i++){
-		if(cells[i]==-1){
-			cells[i]=offset;
-			break;
-		}
-	}
-	if(i==bucksize){
-		cout<<"Bucket is full!!!!\n";///split h double
-		return 1;
-	}
+int Bucket::insert_Bucket(int trid,int del,int ins){
+	if(current==size)
+		expand_Bucket();				
+	cells[current].set_trans_id(trid);
+	cells[current].set_offset_del(del);
+	cells[current].set_offset_del(ins);
+	current++;
 	return 0;
 }
 
+void Bucket::expand_Bucket(){				//BARELI DIXWS PATO
+	int i,id,del,ins;
+	Cell * cells2;
+	cells2=new Cell[2*size];
+	for(i=0;i<current;i++){
+		id = cells[i].get_trans_id();
+		del= cells[i].get_offset_del();
+		ins= cells[i].get_offset_ins();
+		cells2[i].set_trans_id(id);
+		cells2[i].set_offset_del(del);
+		cells2[i].set_offset_ins(ins);
+	}
+	delete[] cells;
+	cells=cells2;
+	size=size*2;
+}
 /*
 Hashtable::Hashtable(){
 	table= new Bucket*[hash_size];
