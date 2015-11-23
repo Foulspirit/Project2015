@@ -1,0 +1,22 @@
+HEAD LEN 12 	| HEAD TYPE 1 	| DESC DefineSchema 2 | 3  4 
+HEAD LEN 224 	| HEAD TYPE 2 	| DESC Transaction 0 (0, 2) | 	| opins rid 0 #rows 4 |opins rid 1 #rows 3 |
+HEAD LEN 8 	| HEAD TYPE 5 	| DESC Forget 0
+HEAD LEN 48 	| HEAD TYPE 2 	| DESC Transaction 1 (0, 1) | 	| opins rid 0 #rows 1 |
+HEAD LEN 32 	| HEAD TYPE 2 	| DESC Transaction 2 (1, 0) |opdel rid 1 #rows 1  	| 
+HEAD LEN 64 	| HEAD TYPE 2 	| DESC Transaction 3 (1, 1) |opdel rid 0 #rows 1  	| opins rid 0 #rows 1 |
+HEAD LEN 76 	| HEAD TYPE 3 	| DESC ValidationQueries 0 [1, 2] 2
+HEAD LEN 52 	| HEAD TYPE 3 	| DESC ValidationQueries 1 [1, 2] 1
+HEAD LEN 92 	| HEAD TYPE 3 	| DESC ValidationQueries 2 [1, 3] 2
+HEAD LEN 8 	| HEAD TYPE 4 	| DESC Flush 2
+HEAD LEN 8 	| HEAD TYPE 5 	| DESC Forget 1
+HEAD LEN 48 	| HEAD TYPE 2 	| DESC Transaction 3 (0, 1) | 	| opins rid 0 #rows 1 |
+HEAD LEN 32 	| HEAD TYPE 2 	| DESC Transaction 5 (1, 0) |opdel rid 0 #rows 1  	| 
+HEAD LEN 56 	| HEAD TYPE 2 	| DESC Transaction 6 (0, 1) | 	| opins rid 1 #rows 1 |
+HEAD LEN 52 	| HEAD TYPE 3 	| DESC ValidationQueries 3 [2, 4] 1
+HEAD LEN 36 	| HEAD TYPE 3 	| DESC ValidationQueries 4 [2, 6] 1
+HEAD LEN 8 	| HEAD TYPE 5 	| DESC Forget 2
+HEAD LEN 68 	| HEAD TYPE 3 	| DESC ValidationQueries 5 [3, 6] 1
+HEAD LEN 56 	| HEAD TYPE 2 	| DESC Transaction 7 (0, 1) | 	| opins rid 1 #rows 1 |
+HEAD LEN 52 	| HEAD TYPE 3 	| DESC ValidationQueries 6 [4, 6] 1
+HEAD LEN 8 	| HEAD TYPE 4 	| DESC Flush 6
+HEAD LEN 0 	| HEAD TYPE 0 	| DESC 
