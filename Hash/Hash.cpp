@@ -74,6 +74,14 @@ void Bucket::set_local(int lcl){
 	local=lcl;
 }
 
+int Bucket::get_current(){
+	return current;
+}
+
+Cell* Bucket::get_cells(){
+	return cells;
+}
+
 void Bucket::print_Bucket(){
 	int i;
 	cout<<"local depth         : "<<local<<endl;
@@ -251,4 +259,20 @@ void Hashtable::printhash(){
 		cout<<"My hash is : "<<i<<endl;
 		table[i].print_Table_Cell();
 	}
+}
+
+int Hashtable::lastins(int pk){
+	int res,offins,i,counter;
+	Bucket * buck;
+	Cell* cells;
+	res=hash_function(pk);
+	buck=table[res].get_Bucket();
+	cells=buck->get_cells();
+	counter=buck->get_current();
+	for(i=counter-1;i<=0;i--){
+		offins=cells[i].get_offset_ins();
+		if(offins!=-1)
+			return offins;
+	}
+	return -1;
 }

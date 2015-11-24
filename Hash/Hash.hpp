@@ -24,7 +24,9 @@ class Bucket{
 		Bucket();
 		~Bucket();
 		void print_Bucket();		//prints local depth and current cells
-		int get_local();	
+		int get_local();
+		int get_current();
+		Cell* get_cells();	
 		void set_local(int );
 		void expand_Bucket();		//doubles the size of cells array
 		int insert_Bucket(int,int,int);
@@ -54,6 +56,7 @@ class Hashtable{
 		~Hashtable();	
 		int insertHashRecord(int,int,int,int);
 		int hash_function(int);
+		int lastins(int);
 		void double_hash();
 		void printhash();
 };

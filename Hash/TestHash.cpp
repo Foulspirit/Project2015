@@ -16,6 +16,7 @@ int main(void){
 	hash.insertHashRecord(pk3,tr3,offdel3,offins3);
 	hash.insertHashRecord(pk4,tr4,offdel4,offins4);
 	hash.insertHashRecord(pk5,tr5,offdel5,offins5);
+	cout<<"Last ins MADA FAKA : "<<hash.lastins(1)<<endl;
 	hash.printhash();
 return 0;
 }
