@@ -25,16 +25,35 @@ class Bucket{
 		~Bucket();
 		void print_Bucket();		//prints local depth and current cells
 		int get_local();	
+		void set_local(int );
 		void expand_Bucket();		//doubles the size of cells array
 		int insert_Bucket(int,int,int);
 			
 };
 
-/*class Hashtable{
+class Table_Cell{	
+		int key;			//pk of the record
+		Bucket * b_ptr;			//ptr to the bucket
+	public:
+		Table_Cell();
+		~Table_Cell();
+		int get_key();
+		Bucket * get_Bucket();
+		void set_key(int);
+		void set_Bucket(Bucket *);
+		void print_Table_Cell();
+};
+
+class Hashtable{
 		int global;
-		Bucket ** table;
+		Table_Cell * table;
+		int hash;
+		int size;
 	public:
 		Hashtable();
 		~Hashtable();	
-		int insertHashRecord();
-}*/
+		int insertHashRecord(int,int,int,int);
+		int hash_function(int);
+		void double_hash();
+		void printhash();
+};
