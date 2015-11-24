@@ -148,7 +148,10 @@ int Journal::getColnum(){
 JournalRecord * Journal::findLastEntry(int key){
 	int cur = current-1;
 	int temp;
+	int i;
+	int *array;
 	JournalRecord * lala;
+
 	while(cur>=0){
 		temp = journal[cur]->getPrimaryKey();
 		if (temp == key) {
@@ -157,6 +160,7 @@ JournalRecord * Journal::findLastEntry(int key){
 		}
 		cur--;
 	}
+
 	return NULL;
 
 }	

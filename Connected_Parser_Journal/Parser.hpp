@@ -39,10 +39,12 @@ static void processTransaction(Transaction_t *t, Journal **j_array){
 
 			tempkey = o->keys[j];
 			JournalRecord * rec2 = j_array[o->relationId]->findLastEntry(tempkey);
-			rec = new JournalRecord();
-			rec->setCopy(rec2->getRecsize(), rec2->getRecord());
-			rec->setTransactionID(t->transactionId);
-			j_array[o->relationId]->insertJournalRecord(rec);
+			if(rec2!=NULL){
+				rec = new JournalRecord();
+				rec->setCopy(rec2->getRecsize(), rec2->getRecord());
+				rec->setTransactionID(t->transactionId);
+				j_array[o->relationId]->insertJournalRecord(rec);
+			}
 
 		}
 		
