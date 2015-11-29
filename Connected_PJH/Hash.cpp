@@ -1,15 +1,15 @@
 #include <iostream>
 #include "Hash.hpp"
 #define buck_size 2
-#define hash_size 2
+#define hash_size 1024
 using namespace std;
 
 
 //------------------------------Cell functions------------------------------//
 Cell::Cell(){
-	trans_id=-1;
-	offset_del=-1;
-	offset_ins=-1;
+	//trans_id=-1;
+	//offset_del=-1;
+	//offset_ins=-1;
 	//cout<<"A cell has just been created\n"<<endl;
 }
 
@@ -17,23 +17,23 @@ Cell::~Cell(){
 	//cout<<"A cell has just been destroyed\n"<<endl;	
 }
 
-int Cell::get_trans_id(){
+uint64_t Cell::get_trans_id(){
 	return trans_id;
 }
-int Cell::get_offset_del(){
+long long int Cell::get_offset_del(){
 	return offset_del;
 }
-int Cell::get_offset_ins(){
+long long int Cell::get_offset_ins(){
 	return offset_ins;
 }
 
-void Cell::set_trans_id(int id){
+void Cell::set_trans_id(uint64_t id){
 	trans_id=id;
 }
-void Cell::set_offset_del(int del){
+void Cell::set_offset_del(long long int del){
 	offset_del=del;
 }
-void Cell::set_offset_ins(int ins){
+void Cell::set_offset_ins(long long int ins){
 	offset_ins=ins;
 }
 
@@ -53,7 +53,6 @@ void Cell::print_Cell(){
 
 //------------------------------Bucket functions------------------------------//
 Bucket::Bucket(){
-	int i;
 	cells=new Cell[buck_size];
 	local=1;
 	size=buck_size;
@@ -74,7 +73,7 @@ void Bucket::set_local(int lcl){
 	local=lcl;
 }
 
-int Bucket::get_current(){
+long int Bucket::get_current(){
 	return current;
 }
 
@@ -83,7 +82,7 @@ Cell* Bucket::get_cells(){
 }
 
 void Bucket::print_Bucket(){
-	int i;
+	long int i;
 	cout<<"local depth         : "<<local<<endl;
 	cout<<"size of range array : "<<size<<endl;
 	cout<<"currently filled    : "<<current<<endl;
@@ -92,7 +91,7 @@ void Bucket::print_Bucket(){
 	cout<<endl;
 }
 
-int Bucket::insert_Bucket(int trid,int del,int ins){
+int Bucket::insert_Bucket(uint64_t trid, long long int del, long long int ins){
 	if(current==size)
 		expand_Bucket();				
 	cells[current].set_trans_id(trid);
@@ -103,7 +102,9 @@ int Bucket::insert_Bucket(int trid,int del,int ins){
 }
 
 void Bucket::expand_Bucket(){				//BARELI DIXWS PATO
-	int i,id,del,ins;
+	long int i;
+	uint64_t id;
+	long long int del, ins;
 	Cell * cells2;
 	cells2=new Cell[2*size];
 	for(i=0;i<current;i++){
@@ -121,7 +122,8 @@ void Bucket::expand_Bucket(){				//BARELI DIXWS PATO
 
 //------------------------------Table Cell functions------------------------------//
 Table_Cell::Table_Cell(){
-	key=-1;
+	//key=-1;
+	key = 0;
 	b_ptr=NULL;
 	//cout<<"A table cell has just been created!\n";
 }
@@ -132,7 +134,7 @@ Table_Cell::~Table_Cell(){
 	//cout<<"A table cell has just been destroyed!\n";
 }
 
-int Table_Cell::get_key(){
+uint64_t Table_Cell::get_key(){
 	return key;
 }
 
@@ -140,7 +142,7 @@ Bucket * Table_Cell::get_Bucket(){
 	return b_ptr;
 }
 				
-void Table_Cell::set_key(int k){
+void Table_Cell::set_key(uint64_t k){
 	key=k;
 }
 		
@@ -148,27 +150,28 @@ void Table_Cell::set_Bucket(Bucket * buck){
 	b_ptr=buck;
 }
 
-void Table_Cell::print_Table_Cell(){
-	if(key!=-1){
-		cout<<"My key is :"<<key<<endl;
-		cout<<"I'm pointing at :"<<b_ptr<<endl;
-		cout<<"With data:\n"<<endl;
+void Table_Cell::print_Table_Cell(uint64_t myhs){
+	if(b_ptr != NULL){
+		cout << "My Hash is:" << myhs << endl;
+		cout << "My key is :" << key << endl;
+		cout << "I'm pointing at :" << b_ptr << endl;
+		cout << "With data:\n" << endl;
 		b_ptr->print_Bucket();
 	}
 }
 //------------------------------Hashtable functions------------------------------//
 
 Hashtable::Hashtable(){
-	size=hash_size;
-	global=1;
-	hash=2;
-	table=new Table_Cell[size];
+	size = hash_size;
+	global = 10;
+	hash = 1024;
+	table = new Table_Cell[size];
 	//cout<<"A hashtable has just been created!\n";	
 }
-int Hashtable::hash_function(int key){
+uint64_t Hashtable::hash_function(uint64_t key){
 	return key%hash;
 }
-Hashtable::~Hashtable(){
+/*Hashtable::~Hashtable(){
 	int i,j;
 	Bucket * tempb;
 	for(i=0;i<size;i++){
@@ -182,14 +185,25 @@ Hashtable::~Hashtable(){
 	delete[] table;
 	cout<<"A hashtable has just been destroyed!\n";
 }
+*/
+Hashtable::~Hashtable(){
+	uint64_t i;
+	for(i=0;i<size;i++){
+		table[i].set_Bucket(NULL);
+	}
+	delete[] table;
 
-int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
+	cout<<"A hashtable has just been destroyed!\n";
+}
+
+int Hashtable::insertHashRecord(uint64_t pk, uint64_t tr_id, long long int del, long long int ins, List * lista){
 	//cout<<"INSERTING..."<<endl;
-	int res;
-	res=hash_function(pk);
-	if(table[res].get_key()==-1){				//periptwsh NULL		
+	uint64_t res;
+	res = hash_function(pk);
+	if(table[res].get_Bucket()==NULL){				//periptwsh NULL		
 		table[res].set_key(pk);
 		Bucket* buck=new Bucket();
+		lista->push(buck);
 		buck->insert_Bucket(tr_id,del,ins);
 		buck->set_local(global);
 		table[res].set_Bucket(buck);
@@ -203,9 +217,9 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 			return 0;	
 		}
 		else{						//upoperiptwsh diaforetiko key
-			int templ,newl;
-			int tempk;
-			int tempres=-1,newres;
+			int templ;
+			uint64_t tempk;
+			uint64_t tempres=-1,newres;
 			Bucket * tempb;
 			Bucket * newbuck;
 			tempb=table[res].get_Bucket();
@@ -226,6 +240,7 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 			if(tempres==-1)
 				tempres=hash_function(pk);
 			newbuck=new Bucket();
+			lista->push(newbuck);
 			table[tempres].set_key(pk);
 			table[tempres].set_Bucket(newbuck);
 			newbuck->set_local(global);
@@ -234,15 +249,15 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 	}
 }
 
-void Hashtable::double_hash(){\
-	//cout<<"DOUBLE..."<<endl;
+void Hashtable::double_hash(){
+	cout<<"DOUBLE..."<<endl;
 
-	int i,tempk;
+	uint64_t i,tempk;
 	Bucket * tempb;
 	Table_Cell * table2;
-	table2=new Table_Cell[size*2];
+	table2 = new Table_Cell[size*2];
 	global++;
-	hash=2*hash;
+	hash = hash*2;
 	for(i=0;i<size;i++){
 		tempk=table[i].get_key();
 		tempb=table[i].get_Bucket();
@@ -253,21 +268,23 @@ void Hashtable::double_hash(){\
 		table[i].set_Bucket(NULL);	
 	}
 	delete[] table;
-	table=table2;
-	size=size*2;	
+	table = table2;
+	size = size*2;	
 }
 
 
 void Hashtable::printHash(){
-	int i;
+	uint64_t i;
 	for(i=0;i<size;i++){
-		cout<<"My hash is : "<<i<<endl;
-		table[i].print_Table_Cell();
+		//cout<<"My hash is : "<<i<<endl;
+		table[i].print_Table_Cell(i);
 	}
 }
 
-int Hashtable::lastins(int pk){
-	int res,offins,i,counter;
+long long int Hashtable::lastins(uint64_t pk){
+	uint64_t res;
+	long long int offins;
+	long int i, counter;
 	Bucket * buck;
 	Cell* cells;
 	
@@ -283,4 +300,92 @@ int Hashtable::lastins(int pk){
 		if(offins!=-1)
 			return offins;
 	}
+}
+//--------------------------------------------------------------------------------------------Node----------------------------//
+
+Node::Node(Bucket* ptr){
+	data=ptr;
+	next=NULL;
+	cout<<"A node has just been created\n"<<endl;
+}
+
+Node::~Node(){
+	cout<<"A node has just been destroyed\n"<<endl;
+}
+
+Node* Node::get_next(){
+	return next;
+}
+
+void Node::set_next(Node * n){
+	next=n;
+}
+
+Bucket * Node::get_data(){
+	return data;
+}
+
+void Node::print_Node(){
+	cout<<data;
+}
+
+//-------------------------------------------------------------------------------------------List--------------------------------//
+
+List::List(){
+	head=NULL;
+	tail=NULL;
+	cout<<"A list has just been created"<<endl;
+}
+
+List::~List(){
+	Bucket  * buck;	
+	Node * nd;
+	while(head!=NULL){
+		cout<<"hello i m popping\n";
+		nd=pop();
+		buck=nd->get_data();
+		delete buck;
+		delete nd;
+	}
+	cout<<"A list has just been destroyed ! \n"<<endl;
+}
+
+void List::print_List(){
+	Node * curr;
+	curr=head;
+	cout<<"*head-->";
+	while(curr!=NULL){
+		curr->print_Node();
+		curr=curr->get_next();
+		cout<<"-->";
+	}
+	cout<<"null"<<endl;
+}
+
+int List::is_empty(){
+	if(head==NULL)
+		return 0;
+	return 1;
+}
+
+void List::push(Bucket *ptr){
+	Node * nd=new Node(ptr);
+	if(head==NULL){
+		head=nd;
+		tail=nd;
+	}
+	else{
+		tail->set_next(nd);
+		tail=nd;
+	}
+}
+
+Node * List::pop(){
+	Node *nd;
+	if(is_empty()==0){
+		return NULL;
+	}
+	nd=head;
+	head=nd->get_next();
+	return nd;		
 }

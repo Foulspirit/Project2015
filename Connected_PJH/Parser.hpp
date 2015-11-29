@@ -22,13 +22,14 @@ static void processDefineSchema(DefineSchema_t *s){
 	cout<< endl;
 }
 
-static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **h_array){
+static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **h_array, List **l_array){
 	int i,j,k;
 	const char* reader = t->operations;
 	int rel_colcount;
 	JournalRecord * rec;
-	int* temparray;
-	int tempkey, pos_h, pos_j;
+	uint64_t* temparray;
+	uint64_t tempkey;
+	long long int pos_h, pos_j;
 
 	cout << "Transaction "<< t->transactionId << " (" << t->deleteCount << ", " << t->insertCount <<") |";
 
@@ -47,14 +48,9 @@ static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **
 				rec->setCopy(rec2->getRecsize(), rec2->getRecord());
 				rec->setTransactionID(t->transactionId);
 				pos_j = j_array[o->relationId]->insertJournalRecord(rec);
-				h_array[o->relationId]->insertHashRecord(rec->getPrimaryKey(), rec->getTransactionID(), pos_j-1, -1);
+				h_array[o->relationId]->insertHashRecord(rec->getPrimaryKey(), rec->getTransactionID(), pos_j-1, -1, l_array[o->relationId]);
 
 			}
-
-			//JournalRecord * rec2 = j_array[o->relationId]->findLastEntry(tempkey);
-			//if(rec2!=NULL){
-			//}
-
 		}
 		
 		reader += 2*sizeof(uint32_t) + (sizeof(uint64_t)*o->rowCount);
@@ -65,7 +61,7 @@ static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **
 		const TransactionOperationInsert_t* o = (TransactionOperationInsert_t*)reader;
 		cout<< "opins rid " << o->relationId << " #rows " << o->rowCount << " |";
 		rel_colcount = j_array[o->relationId]->getColnum();
-		temparray = new int[rel_colcount];
+		temparray = new uint64_t[rel_colcount];
 
 		for(j=0; j< o->rowCount; j++){
 
@@ -75,7 +71,7 @@ static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **
 
 			rec = new JournalRecord(t->transactionId, temparray, rel_colcount);
 			pos_j = j_array[o->relationId]->insertJournalRecord(rec);
-			h_array[o->relationId]->insertHashRecord(rec->getPrimaryKey(), rec->getTransactionID(), -1, pos_j-1);
+			h_array[o->relationId]->insertHashRecord(rec->getPrimaryKey(), rec->getTransactionID(), -1, pos_j-1, l_array[o->relationId]);
 
 
 		}
@@ -87,6 +83,21 @@ static void processTransaction(Transaction_t *t, Journal **j_array, Hashtable **
 }
 static void processValidationQueries(ValidationQueries_t *v){
 	cout << "ValidationQueries " << v->validationId << " [" <<v->from << ", "<< v->to << "] "<<v->queryCount << endl;
+	const char* reader = v->queries;
+	int i, j;
+
+	for (i=0; i< v->queryCount; i++){
+		const Query_t* q = (Query_t*)reader;
+		cout << "\t" << q->relationId<< " ";
+
+		for (j=0; j< q->columnCount; j++){
+			cout<< "(C"<< q->columns[j].column <<" "<< q->columns[j].op <<" "<< q->columns[j].value <<") ";
+		}
+		reader += 2*sizeof(uint32_t) + (sizeof(Column_t)*q->columnCount);
+
+		cout<<endl;
+
+	}
 }
 
 static void processFlush(Flush_t *fl){

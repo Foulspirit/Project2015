@@ -39,12 +39,12 @@ int main(int argc, char **argv) {
 	int jsize=0;
 
 	Hashtable **hashes;
-
+	List **lists;
 
 	while(1){
 		// Retrieve the message head
 		if (read(0, &head, sizeof(head)) <= 0) { return -1; } // crude error handling, should never happen
-		cout << "HEAD LEN "<< head.messageLen << "\t| HEAD TYPE "<<  head.type << "\t| DESC ";
+		//cout << "HEAD LEN "<< head.messageLen << "\t| HEAD TYPE "<<  head.type << "\t| DESC ";
 		
 		// Retrieve the message body
 		if (body != NULL) free(body);
@@ -61,11 +61,14 @@ int main(int argc, char **argv) {
 
 			case Done: finalPrinter(journals, hashes, jsize); 
 						for(i=0; i<jsize; i++){
+							delete lists[i];
 							delete hashes[i];
 							delete journals[i];
+
 						}
-						delete [] journals;
+						delete [] lists;
 						delete [] hashes;
+						delete [] journals;
 							
 						return 0;
 
@@ -74,16 +77,18 @@ int main(int argc, char **argv) {
 				jsize = DSbody->relationCount;
 				journals = new Journal*[DSbody->relationCount];
 				hashes = new Hashtable*[DSbody->relationCount];
+				lists = new List*[DSbody->relationCount];
 
 				for(i=0; i<DSbody->relationCount; i++){
 					journals[i] = new Journal(DSbody->columnCounts[i]);
 					hashes[i] = new Hashtable();
+					lists[i] = new List();
 				}
 
 				processDefineSchema(DSbody); 
 				break;
 				
-			case Transaction: Tbody = (Transaction_t*) body; processTransaction(Tbody, journals, hashes); break;
+			case Transaction: Tbody = (Transaction_t*) body; processTransaction(Tbody, journals, hashes, lists); break;
 
 			case ValidationQueries: VQbody = (ValidationQueries_t*) body; processValidationQueries(VQbody); break;
 			case Flush: FLbody = (Flush_t*) body; processFlush(FLbody); break;

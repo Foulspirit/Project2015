@@ -1,39 +1,40 @@
+#include <stdint.h>
 
 class JournalRecord{
-	int * record;
+	uint64_t * record;
 	int recsize;
 	public:
-		JournalRecord(int,int *,int);
+		JournalRecord(uint64_t, uint64_t *, int);
 		JournalRecord();
 
 		~JournalRecord();
 		void printRecord();
-		int getPrimaryKey();
-		int getTransactionID();
-		void setTransactionID(int);
-		void setRecord(int *);
+		uint64_t getPrimaryKey();
+		uint64_t getTransactionID();
+		void setTransactionID(uint64_t);
+		void setRecord(uint64_t *);
 		void setRecsize(int);
-		void setCopy(int, int *);
+		void setCopy(int, uint64_t *);
 		int getRecsize();
-		int * getRecord();
+		uint64_t * getRecord();
 };
 
 
 class Journal{
 	JournalRecord ** journal;
 	int colnum;
-	int maxsize;
-	int current;	
+	long long int maxsize;
+	long long int current;	
 	public:
 		Journal();
 		Journal(int);
 		~Journal();
 		void printJournal();
-		int insertJournalRecord(JournalRecord*);
+		long long int insertJournalRecord(JournalRecord*);
 		int increaseJournal();	
 		int getColnum();	
-		JournalRecord * findLastEntry(int);
-		JournalRecord * getFromOffset(int);
+		JournalRecord * findLastEntry(uint64_t);
+		JournalRecord * getFromOffset(long long int);
 };
 
 
