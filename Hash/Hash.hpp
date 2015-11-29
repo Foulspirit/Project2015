@@ -46,6 +46,30 @@ class Table_Cell{
 		void print_Table_Cell();
 };
 
+class Node{
+		Bucket * data;
+		Node * next;
+	public:
+		Node(Bucket*);
+		~Node();
+		Node* get_next();
+		Bucket* get_data();
+		void set_next(Node*);
+		void print_Node();	
+};
+
+class List{
+		Node *head;
+		Node *tail;
+	public:
+		List();
+		~List();
+		void push(Bucket*);	
+		Node* pop();
+		int is_empty();
+		void print_List();
+};
+
 class Hashtable{
 		int global;
 		Table_Cell * table;
@@ -54,9 +78,14 @@ class Hashtable{
 	public:
 		Hashtable();
 		~Hashtable();	
-		int insertHashRecord(int,int,int,int);
+		int insertHashRecord(int,int,int,int,List*);
 		int hash_function(int);
 		int lastins(int);
 		void double_hash();
-		void printhash();
+		void printHash();
 };
+
+
+
+
+

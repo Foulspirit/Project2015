@@ -1,20 +1,20 @@
-#include<iostream>
-#include"Hash.hpp"
+#include <iostream>
+#include "Hash.hpp"
 #define buck_size 2
 #define hash_size 2
 using namespace std;
 
 
-//----------------------------------------Cell functions----------------//
+//------------------------------Cell functions------------------------------//
 Cell::Cell(){
 	trans_id=-1;
 	offset_del=-1;
 	offset_ins=-1;
-	cout<<"A cell has just been created\n"<<endl;
+	//cout<<"A cell has just been created\n"<<endl;
 }
 
 Cell::~Cell(){
-	cout<<"A cell has just been destroyed\n"<<endl;	
+	//cout<<"A cell has just been destroyed\n"<<endl;	
 }
 
 int Cell::get_trans_id(){
@@ -51,19 +51,19 @@ void Cell::print_Cell(){
 }
 
 
-//--------------------------------------------------------------Bucket functions-------------------------------------//
+//------------------------------Bucket functions------------------------------//
 Bucket::Bucket(){
 	int i;
 	cells=new Cell[buck_size];
 	local=1;
 	size=buck_size;
 	current=0;
-	cout<<"A bucket has just been created\n"<<endl;
+	//cout<<"A bucket has just been created\n"<<endl;
 }
 
 Bucket::~Bucket(){
 	delete[] cells;
-	cout<<"A bucket has just been destroyed\n"<<endl;
+	//cout<<"A bucket has just been destroyed\n"<<endl;
 }
 
 int Bucket::get_local(){
@@ -119,17 +119,17 @@ void Bucket::expand_Bucket(){				//BARELI DIXWS PATO
 	size=size*2;
 }
 
-//------------------------------------------------------------------------Table Cell functions------------------------------//
+//------------------------------Table Cell functions------------------------------//
 Table_Cell::Table_Cell(){
 	key=-1;
 	b_ptr=NULL;
-	cout<<"A table cell has just been created!\n";
+	//cout<<"A table cell has just been created!\n";
 }
 
 Table_Cell::~Table_Cell(){
 	if(b_ptr!=NULL)
 		delete(b_ptr);
-	cout<<"A table cell has just been destroyed!\n";
+	//cout<<"A table cell has just been destroyed!\n";
 }
 
 int Table_Cell::get_key(){
@@ -156,19 +156,19 @@ void Table_Cell::print_Table_Cell(){
 		b_ptr->print_Bucket();
 	}
 }
-//----------------------------------------------------------------------Hashtable functions-----------------------------------//
+//------------------------------Hashtable functions------------------------------//
 
 Hashtable::Hashtable(){
 	size=hash_size;
 	global=1;
 	hash=2;
 	table=new Table_Cell[size];
-	cout<<"A hashtable has just been created!\n";	
+	//cout<<"A hashtable has just been created!\n";	
 }
 int Hashtable::hash_function(int key){
 	return key%hash;
 }
-Hashtable::~Hashtable(){
+/*Hashtable::~Hashtable(){
 	int i,j;
 	Bucket * tempb;
 	for(i=0;i<size;i++){
@@ -182,13 +182,25 @@ Hashtable::~Hashtable(){
 	delete[] table;
 	cout<<"A hashtable has just been destroyed!\n";
 }
+*/
+Hashtable::~Hashtable(){
+	int i,j;
+	for(i=0;i<size;i++){
+		table[i].set_Bucket(NULL);
+	}
+	delete[] table;
 
-int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
+	cout<<"A hashtable has just been destroyed!\n";
+}
+
+int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins,List * lista){
+	//cout<<"INSERTING..."<<endl;
 	int res;
 	res=hash_function(pk);
 	if(table[res].get_key()==-1){				//periptwsh NULL		
 		table[res].set_key(pk);
-		Bucket* buck=new Bucket;
+		Bucket* buck=new Bucket();
+		lista->push(buck);
 		buck->insert_Bucket(tr_id,del,ins);
 		buck->set_local(global);
 		table[res].set_Bucket(buck);
@@ -204,7 +216,7 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 		else{						//upoperiptwsh diaforetiko key
 			int templ,newl;
 			int tempk;
-			int tempres,newres;
+			int tempres=-1,newres;
 			Bucket * tempb;
 			Bucket * newbuck;
 			tempb=table[res].get_Bucket();
@@ -222,7 +234,10 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 				}while(tempres==newres);
 				tempres=newres;
 			}
-			newbuck=new Bucket;
+			if(tempres==-1)
+				tempres=hash_function(pk);
+			newbuck=new Bucket();
+			lista->push(newbuck);
 			table[tempres].set_key(pk);
 			table[tempres].set_Bucket(newbuck);
 			newbuck->set_local(global);
@@ -231,7 +246,9 @@ int Hashtable::insertHashRecord(int pk,int tr_id,int del,int ins){
 	}
 }
 
-void Hashtable::double_hash(){
+void Hashtable::double_hash(){\
+	cout<<"DOUBLE..."<<endl;
+
 	int i,tempk;
 	Bucket * tempb;
 	Table_Cell * table2;
@@ -253,7 +270,7 @@ void Hashtable::double_hash(){
 }
 
 
-void Hashtable::printhash(){
+void Hashtable::printHash(){
 	int i;
 	for(i=0;i<size;i++){
 		cout<<"My hash is : "<<i<<endl;
@@ -265,8 +282,12 @@ int Hashtable::lastins(int pk){
 	int res,offins,i,counter;
 	Bucket * buck;
 	Cell* cells;
+	
 	res=hash_function(pk);
+	if(table[res].get_key() != pk)
+		return -1;
 	buck=table[res].get_Bucket();
+
 	cells=buck->get_cells();
 	counter=buck->get_current();
 	for(i=counter-1;i<=0;i--){
@@ -274,5 +295,92 @@ int Hashtable::lastins(int pk){
 		if(offins!=-1)
 			return offins;
 	}
-	return -1;
+}
+//--------------------------------------------------------------------------------------------Node----------------------------//
+
+Node::Node(Bucket* ptr){
+	data=ptr;
+	next=NULL;
+	cout<<"A node has just been created\n"<<endl;
+}
+
+Node::~Node(){
+	cout<<"A node has just been destroyed\n"<<endl;
+}
+
+Node* Node::get_next(){
+	return next;
+}
+
+void Node::set_next(Node * n){
+	next=n;
+}
+
+Bucket * Node::get_data(){
+	return data;
+}
+
+void Node::print_Node(){
+	cout<<data;
+}
+
+//-------------------------------------------------------------------------------------------List--------------------------------//
+
+List::List(){
+	head=NULL;
+	tail=NULL;
+	cout<<"A list has just been created"<<endl;
+}
+
+List::~List(){
+	Bucket  * buck;	
+	Node * nd;
+	while(head!=NULL){
+		cout<<"hello i m popping\n";
+		nd=pop();
+		buck=nd->get_data();
+		delete buck;
+		delete nd;
+	}
+	cout<<"A list has just been destroyed ! \n"<<endl;
+}
+
+void List::print_List(){
+	Node * curr;
+	curr=head;
+	cout<<"*head-->";
+	while(curr!=NULL){
+		curr->print_Node();
+		curr=curr->get_next();
+		cout<<"-->";
+	}
+	cout<<"null"<<endl;
+}
+
+int List::is_empty(){
+	if(head==NULL)
+		return 0;
+	return 1;
+}
+
+void List::push(Bucket *ptr){
+	Node * nd=new Node(ptr);
+	if(head==NULL){
+		head=nd;
+		tail=nd;
+	}
+	else{
+		tail->set_next(nd);
+		tail=nd;
+	}
+}
+
+Node * List::pop(){
+	Node *nd;
+	if(is_empty()==0){
+		return NULL;
+	}
+	nd=head;
+	head=nd->get_next();
+	return nd;		
 }

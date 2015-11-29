@@ -11,12 +11,15 @@ int main(void){
 	int pk4=2,tr4=3,offdel4=2,offins4=-1;
 	int pk5=4,tr5=1,offdel5=-1,offins5=4;
 	Hashtable hash;
-	hash.insertHashRecord(pk1,tr1,offdel1,offins1);
-	hash.insertHashRecord(pk2,tr2,offdel2,offins2);
-	hash.insertHashRecord(pk3,tr3,offdel3,offins3);
-	hash.insertHashRecord(pk4,tr4,offdel4,offins4);
-	hash.insertHashRecord(pk5,tr5,offdel5,offins5);
+	List * lista =new List();
+	hash.insertHashRecord(pk1,tr1,offdel1,offins1,lista);
+	hash.insertHashRecord(pk2,tr2,offdel2,offins2,lista);
+	hash.insertHashRecord(pk3,tr3,offdel3,offins3,lista);
+	hash.insertHashRecord(pk4,tr4,offdel4,offins4,lista);
+	hash.insertHashRecord(pk5,tr5,offdel5,offins5,lista);
 	cout<<"Last ins MADA FAKA : "<<hash.lastins(1)<<endl;
-	hash.printhash();
+	hash.printHash();
+	lista->print_List();
+	delete lista;
 return 0;
 }
