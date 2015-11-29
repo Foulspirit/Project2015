@@ -250,7 +250,7 @@ int Hashtable::insertHashRecord(uint64_t pk, uint64_t tr_id, long long int del, 
 }
 
 void Hashtable::double_hash(){
-	cout<<"DOUBLE..."<<endl;
+	//cout<<"DOUBLE..."<<endl;
 
 	uint64_t i,tempk;
 	Bucket * tempb;
@@ -306,11 +306,11 @@ long long int Hashtable::lastins(uint64_t pk){
 Node::Node(Bucket* ptr){
 	data=ptr;
 	next=NULL;
-	cout<<"A node has just been created\n"<<endl;
+	//cout<<"A node has just been created\n"<<endl;
 }
 
 Node::~Node(){
-	cout<<"A node has just been destroyed\n"<<endl;
+	//cout<<"A node has just been destroyed\n"<<endl;
 }
 
 Node* Node::get_next(){
@@ -334,20 +334,20 @@ void Node::print_Node(){
 List::List(){
 	head=NULL;
 	tail=NULL;
-	cout<<"A list has just been created"<<endl;
+	//cout<<"A list has just been created"<<endl;
 }
 
 List::~List(){
 	Bucket  * buck;	
 	Node * nd;
 	while(head!=NULL){
-		cout<<"hello i m popping\n";
+		//cout<<"hello i m popping\n";
 		nd=pop();
 		buck=nd->get_data();
 		delete buck;
 		delete nd;
 	}
-	cout<<"A list has just been destroyed ! \n"<<endl;
+	//cout<<"A list has just been destroyed ! \n"<<endl;
 }
 
 void List::print_List(){

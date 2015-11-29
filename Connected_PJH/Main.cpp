@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 	while(1){
 		// Retrieve the message head
 		if (read(0, &head, sizeof(head)) <= 0) { return -1; } // crude error handling, should never happen
-		//cout << "HEAD LEN "<< head.messageLen << "\t| HEAD TYPE "<<  head.type << "\t| DESC ";
+		cout << "HEAD LEN "<< head.messageLen << "\t| HEAD TYPE "<<  head.type << "\t| DESC ";
 		
 		// Retrieve the message body
 		if (body != NULL) free(body);

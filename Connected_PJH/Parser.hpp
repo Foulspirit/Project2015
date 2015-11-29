@@ -88,14 +88,14 @@ static void processValidationQueries(ValidationQueries_t *v){
 
 	for (i=0; i< v->queryCount; i++){
 		const Query_t* q = (Query_t*)reader;
-		cout << "\t" << q->relationId<< " ";
+		////////////cout << "\t" << q->relationId<< " ";
 
 		for (j=0; j< q->columnCount; j++){
-			cout<< "(C"<< q->columns[j].column <<" "<< q->columns[j].op <<" "<< q->columns[j].value <<") ";
+			/////////cout<< "(C"<< q->columns[j].column <<" "<< q->columns[j].op <<" "<< q->columns[j].value <<") ";
 		}
 		reader += 2*sizeof(uint32_t) + (sizeof(Column_t)*q->columnCount);
 
-		cout<<endl;
+		////////cout<<endl;
 
 	}
 }
